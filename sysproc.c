@@ -30,10 +30,11 @@ int
 sys_kill(void)
 {
   int pid;
+  int signum;
 
-  if(argint(0, &pid) < 0)
+  if(argint(0, &pid) < 0 || argint(1, &signum) < 0)
     return -1;
-  return kill(pid);
+  return kill(pid, signum);
 }
 
 int
@@ -88,4 +89,29 @@ sys_uptime(void)
   xticks = ticks;
   release(&tickslock);
   return xticks;
+}
+
+int
+sys_sigprocmask(void) {
+    uint sigmask;
+    if (argint(0, (int *) &sigmask) < 0) {
+        return -1;
+    }
+    return sigprocmask(sigmask);
+}
+
+int
+sys_sigaction(void) {
+  int signum;
+  char* act;
+  char* oldact;
+  if(argint(0, &signum) < 0 || argptr(1, &act , sizeof(struct sigaction*)) < 0 || argptr(2,&oldact, sizeof(struct sigaction*)) < 0) {
+    return -1;
+  }
+  return sigaction(signum, (struct sigaction*) act,(struct sigaction*) oldact);
+}
+
+void
+sys_sigret(void) {
+  sigret();
 }

@@ -1,3 +1,4 @@
+
 // Per-CPU state
 struct cpu {
   uchar apicid;                // Local APIC ID
@@ -32,7 +33,9 @@ struct context {
   uint eip;
 };
 
-enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE };
+
+enum procstate { UNUSED, EMBRYO, SLEEPING, RUNNABLE, RUNNING, ZOMBIE, 
+_UNUSED, _EMBRYO, _SLEEPING, _RUNNABLE, _RUNNING, _ZOMBIE };
 
 // Per-process state
 struct proc {
@@ -49,6 +52,13 @@ struct proc {
   struct file *ofile[NOFILE];  // Open files
   struct inode *cwd;           // Current directory
   char name[16];               // Process name (debugging)
+  uint pendingSignals;         //32bit array of pending signals
+  uint signalMask;             //32bit array of signal mask
+  void *signalHandlers[32];    //array of signal handlers
+  struct sigaction sigactArray[32];
+  struct trapframe *oldTf;     //save the old trapframe
+  uint oldMask;                //save the old mask 32bit array
+  char s_flag;                 //indicate the process is working on signal
 };
 
 // Process memory is laid out contiguously, low addresses first:

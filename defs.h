@@ -58,6 +58,10 @@ void            ideinit(void);
 void            ideintr(void);
 void            iderw(struct buf*);
 
+//wakeSigret.s
+void            sigret_begin(void);
+void            sigret_end(void);
+
 // ioapic.c
 void            ioapicenable(int irq, int cpu);
 extern uchar    ioapicid;
@@ -107,7 +111,7 @@ int             cpuid(void);
 void            exit(void);
 int             fork(void);
 int             growproc(int);
-int             kill(int);
+int             kill(int, int);
 struct cpu*     mycpu(void);
 struct proc*    myproc();
 void            pinit(void);
@@ -120,6 +124,9 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+uint            sigprocmask(uint);
+int             sigaction(int, const struct sigaction *acr, struct sigaction *oldact);
+void            sigret(void);
 
 // swtch.S
 void            swtch(struct context**, struct context*);
